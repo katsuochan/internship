@@ -1,16 +1,24 @@
 <!DOCHTML>
 <html>
 <head>
-<meta charset="utf-8">
+<meta http-equiv="Content-Type" text="text/html" charset="utf-8">
 </head>
 <body>
+<h1>検索</h1>
 <form action = "search.cgi" method="post">
-title<input type="text" name="title"><br>
-author<input type="text" name="author"><br>
-publisher<input type="text" name="publisher"><br>
-isbn<input type="text" name="isbn"><br>
+  title<input type="text" name="title"><br>
+  author<input type="text" name="author"><br>
+  publisher<input type="text" name="publisher"><br>
+  isbn<input type="text" name="isbn"><br>
 <input type="submit" value="送信">
 </form>
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+<h1>新規作成</h1>
+<form action="newdata.cgi" method="post">
+  title    <input type="text" name="title"><br>
+  author   <input type="text" name="author"><br>
+  publisher<input type="text" name="publisher"><br>
+  isbn     <input type="text" name="isbn"><br>
+  issn    <input type="text" name="issn"><br>
+<input type="submit" value="送信">
 </body>
 </html>
