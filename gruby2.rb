@@ -3,7 +3,7 @@
 require 'pp'
 require 'json'
 require 'nkf' 
-
+require  'sqlite3'
 require 'google/api_client'
 require 'google/api_client/client_secrets'
 require 'google/api_client/auth/installed_app'
@@ -45,19 +45,19 @@ result = client.execute(
   }
 )
 
-
+sql = "insert into ghyouka values(\"WADAKEISHI\","
 res = result.response.body.force_encoding("UTF-8")
 body = JSON.parse(res)
 
+ar  =[]
 body['rows'].each do |vl|
   #print("キー", key, ":", value,"\n")
   print(vl,"\n")
+  sql += "\""+vl[2]+"\", \""+vl[0]+"\", \""+vl[1]+"\", \""+vl[3]+"\");"
+ # ar[1]=vl[2], ar[2]=vl[0], ar[3]=vl[1], ar[4]=vl[3]
 end
-=begin
-body['rows'].each do |vl|
-  print(vl[1], "\n")
-end
-=end
-
-
+db = SQLite3::Database.new("testg")
+ db.transaction{
+    db.execute(sql) 
+ }
 
