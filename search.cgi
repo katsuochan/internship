@@ -1,6 +1,7 @@
 #!/usr/bin/ruby
 #! ruby -Ku
 # coding:utf-8
+
 print("Content-type: text/html\n\n")
 print("<html>")
 require("kconv")

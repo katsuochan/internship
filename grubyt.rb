@@ -37,10 +37,10 @@ result = client.execute(
   :parameters => {
     'ids' => 'ga:90686374', # 自分のプロパティID
     'start-date' => '2013-07-01',
-    'end-date' => '2014-09-08',
+    'end-date' => '2014-09-09',
    'metrics' =>'ga:visitors,ga:visits,ga:pageviews',
     #'dimensions' => 'ga:pagePath,ga:pageTitle, ga:browser',
-     'dimensions' => 'ga:region,ga:month,ga:keyword',
+     'dimensions' => 'ga:region,ga:month,ga:keyword,ga:source',
     'sort' => '-ga:pageviews'
   }
 )
@@ -49,24 +49,10 @@ result = client.execute(
 res = result.response.body.force_encoding("UTF-8")
 body = JSON.parse(res)
 
-db = SQLite3::Database.new("testg")
+
 
 body['rows'].each do |vl|
-  #print(vl,"\n")
-  sql = "insert into ghyouka values(\"WADAKEISHI\",\""+vl[0]+"\", \""+vl[1]+"\", \""+vl[2]+"\", \""+vl[5]+"\");"
-   begin
-   db.transaction{
-    db.execute(sql)
-   } 
-   rescue =>e
-     puts e
-   end
- 
-  #print("\""+vl[0]+"\", \""+vl[1]+"\", \""+vl[2]+"\", \""+vl[5]+"\");");
+  
+ print(vl, "\n")
+
 end
-=begin
-db = SQLite3::Database.new("testg")
- db.transaction{
-    db.execute(sql) 
- }
-=end
