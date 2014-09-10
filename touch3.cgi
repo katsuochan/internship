@@ -55,13 +55,49 @@ keys=""
 param=""
 checkflag=false
 wordhash.each{|data|
-     
-    print(data)
-  
+     if place.size >0
+         checkflag =true
+        end
+    #新しい国の表示になった場合、場所リストを増やし、つきをリセット、
+    if !(place.include?(data[0]))
+         place.push(data[0])
+         montht=Array.new
+    #     monthword=Hash.new
+        # beforeplace=data[0]
+        # beforemonth=data[1][0]
+    end
+   #もし新しい月になった場合、その前の月のデータを出す
+    if !(montht.include?(data[1][0]))  and checkflag
+        print(beforeplace,"\n")
+        print(beforemonth, "\n")
+        keys=""
+        param=""
+         c =0
+         monthword.each{|word,value|
+          keys+=word
+          param+=monthword[word].to_s
+            if c <monthword.size-1
+               keys+="|"
+               param+=","
+            end
+            c += 1
+             }  
+          print("<img src='http://chart.apis.google.com/chart?chs=200x100&chd=t:"+param+"&cht=p&chl="+keys+"'/>")
+        montht.push(data[1][0])
+=begin        
+if !(place.include?(data[0]))
+           monthword=Hash.new
+          place.push(data[0])
+        end
+=end
+    end
+       beforeplace=data[0]
+       beforemonth=data[1][0]
+       monthword[data[1][1][0]]=data[1][1][1]
+     # print(data[1][1][0])
+ #    print(data[1][0])ef
    # print("<img src='http://chart.apis.google.com/chart?chs=300x300&chd=t:20,60,50,70,30|14,21,12,18,35&cht=bhg&chco=ff0000,aa0000'/>")  
 }
-
-
 print("おわりー")
 print(beforeplace, "\n")
 print(beforemonth,"\n")
