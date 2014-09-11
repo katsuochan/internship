@@ -60,16 +60,17 @@ wordhash.each{|data|
         end
     #新しい国の表示になった場合、場所リストを増やし、つきをリセット、
     if !(place.include?(data[0]))
+         # print("<h1>",data[1][0],"</h1>")
          place.push(data[0])
          montht=Array.new
     #     monthword=Hash.new
-        # beforeplace=data[0]
+        #beforeplace=data[0]
         # beforemonth=data[1][0]
     end
    #もし新しい月になった場合、その前の月のデータを出す
     if !(montht.include?(data[1][0]))  and checkflag
-        print(beforeplace,"\n")
-        print(beforemonth, "\n")
+       # print(beforeplace,"\n")
+        print("<h2>",beforemonth, "</h2>\n")
         keys=""
         param=""
          c =0
@@ -98,8 +99,8 @@ if !(place.include?(data[0]))
  #    print(data[1][0])ef
    # print("<img src='http://chart.apis.google.com/chart?chs=300x300&chd=t:20,60,50,70,30|14,21,12,18,35&cht=bhg&chco=ff0000,aa0000'/>")  
 }
-print("おわりー")
-print(beforeplace, "\n")
+#print("おわりー")
+#print(beforeplace, "\n")
 print(beforemonth,"\n")
 print("<img src='http://chart.apis.google.com/chart?chs=200x100&chd=t:"+param+"&cht=p&chl="+keys+"'/>")
 ckey=""
@@ -115,7 +116,7 @@ countryhash.each{|key,value|
    end
    i+=1
 }
-print(ckey, "!!", cparam)
+#print(ckey, "!!", cparam)
 print("<img src='http://chart.apis.google.com/chart?chs=200x100&chd=t:"+cparam+"&cht=p&chl="+ckey+"'/>")
 print("</body>")
 print("</html>")
