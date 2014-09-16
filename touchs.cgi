@@ -19,18 +19,19 @@ countrylist=Array.new
 print("<h1>検索結果一覧</h1>\n")
 if place == "" and keyword == "%%"
      db.transaction{
-    db.execute("select * from googledata where user like ? and keyword like ? ORDER BY country,month, kaisu DESC", name,keyword){|data|
+    db.execute("select * from googledatas where user like ? and keyword like ? ORDER BY country,month, kaisu DESC", name,keyword){|data|
                   countrylist.push(data[1])
      }
 
-  }
+ }
    countrylist.uniq!
-    #各国中での処理
+    #各国中での処
    countrylist.each{|country|
+    print("<table border='2'>")
       eachmonth=Array.new
-      print("--------------------------------------------------<br>")
+print("<h1>----------------------",country,"----------------------------<br></h1>")
        db.transaction{
-           db.execute("select * from googledata where user like ? and country like ? ORDER BY country,month, kaisu DESC", name,country){|data|
+           db.execute("select * from googledatas where user like ? and country like ? ORDER BY country,month, kaisu DESC", name,country){|data|
               if !(eachmonth.include?([data[2]]))
                     eachmonth.push(data[2])
               end         
@@ -38,12 +39,11 @@ if place == "" and keyword == "%%"
        }
           eachmonth.uniq!
           eachmonth.each{|month|
-           print(month,"<br>")
            stocker = Hash.new
             keys="" 
             values=""
            db.transaction{
-               db.execute("select * from googledata where user like ? and country like ? and month like? ORDER BY country,month, kaisu DESC", name,country,month){|data|
+               db.execute("select * from googledatas where user like ? and country like ? and month like? ORDER BY country,month, kaisu DESC", name,country,month){|data|
             #  print(data)
               stocker[data[3]]=data[4]
               } 
@@ -58,18 +58,21 @@ if place == "" and keyword == "%%"
                   i+=1
                end
             }
-           
-          print("<img src='http://chart.apis.google.com/chart?chs=200x100&chd=t:"+values+"&cht=p&chl="+keys+"'/>")
+          print("<th>"+month+"</th>")
+          print("<td><img src='http://chart.apis.google.com/chart?chs=200x100&chd=t:"+values+"&cht=p&chl="+keys+"'/></td>")
         #  print("-----------------------</br>")
+      gname = name.gsub(/\%/, '')
+      gkeyword= keyword.gsub(/\%/, '')
+      print("<td><a href='proper.cgi?name=#{gname}&country=#{country}&month=#{month}&keyword=#{gkeyword}'>property</a></td>")
        
         }
-      print("--------------------<br>")
+      print("</table>")
      #ここまで一国分
   }
 elsif place != "" and keyword =="%%"
     eachmonth=Array.new
  db.transaction{
-    db.execute("select * from googledata where user like ? and country =? ORDER BY country,month, kaisu DESC", name,place){|data|
+    db.execute("select * from googledatas where user like ? and country =? ORDER BY country,month, kaisu DESC", name,place){|data|
       eachmonth.push(data[2])
      }
   }
@@ -80,7 +83,7 @@ elsif place != "" and keyword =="%%"
    wordlist = Hash.new
    resouces = Hash.new
    db.transaction{
-      db.execute("select * from googledata where user like? and country =? and month =? ORDER BY country,month,kaisu DESC", name,place,month){|data|
+      db.execute("select * from googledatas where user like? and country =? and month =? ORDER BY country,month,kaisu DESC", name,place,month){|data|
          if wordlist.key?(data[3])
              wordlist[data[3]] += data[4] 
          else
@@ -102,7 +105,7 @@ elsif place != "" and keyword =="%%"
       # print(key,":", value)
      }
      wordlist.each{|key,value|
-       db.execute("select * from googledata where user like ? and month = ? and keyword  =? ORDER BY country,month, kaisu DESC", name,month,key){|data|               }
+       db.execute("select * from googledatas where user like ? and month = ? and keyword  =? ORDER BY country,month, kaisu DESC", name,month,key){|data|               }
      # print("<br>----------</br>")
      }
   #   print("<img src='http://chart.apis.google.com/chart?cht=lc&amp;chs=300x125&amp;chxt=x,y&amp;chxl=0:|"+keys+"&amp;chd=t:"+values+"&amp;chm=s,FF9904,0,-1,6&chxt=x,y' />")
@@ -110,13 +113,13 @@ elsif place != "" and keyword =="%%"
  print("<img src='http://chart.apis.google.com/chart?chs=300x200&chd=t:"+values+"&cht=p&chl="+keys+"'/>")
 keys=""
 values=""
-print("<br><h2>各単語詳細</h2>")
+print("<br><h2>各単語アクセス元詳細</h2>")
 print("<table border='2'>")
 wordlist.each{|key,value|
         # print(key)
       # print("")
       # print("<td>"+key+"</td>")
-       db.execute("select * from googledata where user like ? and month = ? and keyword  =? ORDER BY country,month, kaisu DESC", name,month,key){|data|
+       db.execute("select * from googledatas where user like ? and month = ? and keyword  =? ORDER BY country,month, kaisu DESC", name,month,key){|data|
            if resouces.key?(data[5]) 
               resouces[data[5]] +=1
            else
@@ -149,7 +152,7 @@ wordlist.each{|key,value|
 elsif place=="" and  keyword !="%%"
    
    db.transaction{
-    db.execute("select * from googledata where user like ? and keyword like ? ORDER BY country,month, kaisu DESC", name,keyword){|data|
+    db.execute("select * from googledatas where user like ? and keyword like ? ORDER BY country,month, kaisu DESC", name,keyword){|data|
                   countrylist.push(data[1])
      }
 
@@ -160,7 +163,7 @@ elsif place=="" and  keyword !="%%"
       print("<h1>",country,"</h1><br>")
       eachmonth=Hash.new
        db.transaction{
-           db.execute("select * from googledata where user like ? and country like ? and keyword like ? ORDER BY country,month, kaisu DESC", name,country,keyword){|data|
+           db.execute("select * from googledatas where user like ? and country like ? and keyword like ? ORDER BY country,month, kaisu DESC", name,country,keyword){|data|
                   eachmonth[data[2]]=data[4]                    
        }
    }
