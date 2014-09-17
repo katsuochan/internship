@@ -3,11 +3,8 @@
 print("Content-type: text/html\n\n")
 print("<!DOCTYPE HTML>")
 print("<html>")
-require("kconv")
 print(<<"HTGO")
 <head><meta charset="UTF-8"/>
-<link rel="stylesheet" type="text/css" src="samu.css"/>
-<title>表示結果</title>
 </head>
 HTGO
 require("cgi")
@@ -21,7 +18,6 @@ keyword = "%"+cgi["keyword"]+"%"
 db=SQLite3::Database.new("testg")
 countrylist=Array.new
 print("<body>")
-print("<img src='samurai.gif'>")
 print("<h1>検索結果一覧</h1>\n")
 if place == "" and keyword == "%%"
      db.transaction{
@@ -116,17 +112,17 @@ elsif place != "" and keyword =="%%"
        db.execute("select * from googledatas where user like ? and month = ? and keyword  =? ORDER BY country,month, kaisu DESC", name,month,key){|data|               }
      # print("<br>----------</br>")
      }
+  #   print("<img src='http://chart.apis.google.com/chart?cht=lc&amp;chs=300x125&amp;chxt=x,y&amp;chxl=0:|"+keys+"&amp;chd=t:"+values+"&amp;chm=s,FF9904,0,-1,6&chxt=x,y' />")
+# print(keys, ":", values)
  print("<img src='http://chart.apis.google.com/chart?chs=300x200&chd=t:"+values+"&cht=p&chl="+keys+"'/>")
 keys=""
 values=""
 print("<br><h2>各単語アクセス元詳細</h2>")
-print("<table>")
+print("<table border='2'>")
 wordlist.each{|key,value|
         # print(key)
-    #   print("<table>")
       # print("")
-     #   print("<td><a href='proper.cgi?month=#{month}&name=#{name.gsub(/\%/,'')}&country=#{place}&keyword=#{key.gsub(/\%/,'')}'/>#{key}</a></td>")
-       db.transaction{
+      # print("<td>"+key+"</td>")
        db.execute("select * from googledatas where user like ? and month = ? and keyword  =? ORDER BY country,month, kaisu DESC", name,month,key){|data|
            if resouces.key?(data[5]) 
               resouces[data[5]] +=1
@@ -134,28 +130,26 @@ wordlist.each{|key,value|
              resouces[data[5]] = 1
            end           
         }
-       }
-       # print("<td>"+key+"</td>")
+         print("<td>"+key+"</td>")
           i=0
-=begin
-        resouces.each{|keyr,valuer|
+        resouces.each{|key, value|
          # print("<td>"+key+"</td>")
          # print(key,":",value,"<br>")
-           keys+=keyr
-           values+=valuer.to_s
+           keys+=key
+           values+=value.to_s
            if i<resouces.size-1 
               keys+="|"
               values+=","
            end
         }
-=end
       # print(keys, ":", values)
          if key !="(not set)"
-       # print("<td><img src='http://chart.apis.google.com/chart?chs=200x100&chd=t:"+values+"&cht=p&chl="+keys+"'/></td>")
-       print("<td><a href='proper.cgi?month=#{month}&name=#{name.gsub(/\%/,'')}&country=#{place}&keyword=#{key.gsub(/\%/,'')}'/>#{key}</a></td>")
+        print("<td><img src='http://chart.apis.google.com/chart?chs=200x100&chd=t:"+values+"&cht=p&chl="+keys+"'/></td>")
          else
          print("<td><h2><font color='red'>no data</font></h2></td>")
          end
+           keys=""
+           values=""
      # print("<br>----------</br>")
       resouces=Hash.new
      }
@@ -172,7 +166,7 @@ elsif place=="" and  keyword !="%%"
    #各国処理
    countrylist.uniq!
    countrylist.each{|country|
-     # print("<h1>",keyword.gsub(/\%/, ''),"</h1><br>")
+      print("<h1>",keyword.gsub(/\%/, ''),"</h1><br>")
       eachmonth=Hash.new
        db.transaction{
            db.execute("select distinct * from googledatas where user like ? and country like ? and keyword like ? ORDER BY country,month, kaisu DESC", name,country,keyword){|data|
@@ -221,8 +215,8 @@ print(<<"HTGOs")
 
         var options = {
           title: '#{country}',
-          hAxis: {title: 'アクセス月', minValue: 1, maxValue: 12},
-          vAxis: {title: 'アクセス回数', minValue: 0, maxValue: 20},
+   	  hAxis: {title: 'アクセス月', minValue: 1, maxValue: 12},
+   	  vAxis: {title: 'アクセス回数', minValue: 0, maxValue: 20},
         };
 
         var chart = new google.visualization.LineChart(document.getElementById('#{country}'));

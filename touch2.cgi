@@ -1,12 +1,13 @@
 #!/usr/bin/ruby
 # coding:utf-8
 print("Content-type: text/html\n\n")
+print("<!DOCTYPE HTML>")
 print("<html>")
-require("kconv")
-<<"HTGO"
-"<head><meta http-equiv='Content-Type' charset=utf-8/>
-</head>"
+print(<<"HTGO")
+<head><meta charset="UTF-8"/>
+</head>
 HTGO
+require("kconv")
 require("cgi")
 require("sqlite3")
 require("isbn")
