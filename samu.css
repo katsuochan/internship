@@ -1,5 +1,20 @@
-div{
+div#wide{
           width:840px;
-           height:165px;
+           height:400px;
+}
+div#prop{
+    width:400px;
+    height:150px;
+    line-height: 1.5em;
+}
+div#proper{
+   width:400px;
+   height:300px;
+}
+div#whole{
+   background-color:ffffff;
+}
+body{
+  background-color:#ceeefd;
 }
 #samuHeader {background-color:#efefef !important; background-image:none !important; border-left:5px solid #1c50a1 !important; font-size:105%; min-height:30px; line-height:30px; margin:0 0 10px 0; padding:0 5px; }

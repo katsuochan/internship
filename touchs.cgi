@@ -6,7 +6,7 @@ print("<html>")
 require("kconv")
 print(<<"HTGO")
 <head><meta charset="UTF-8"/>
-<link rel="stylesheet" type="text/css" src="samu.css"/>
+<link rel="stylesheet" type="text/css" href="samu.css"/>
 <title>表示結果</title>
 </head>
 HTGO
@@ -18,9 +18,11 @@ cgi = CGI.new
 name = "%"+cgi["username"]+"%"
 place = cgi["place"]
 keyword = "%"+cgi["keyword"]+"%"
+today = Date.today
 db=SQLite3::Database.new("testg")
 countrylist=Array.new
 print("<body>")
+print("<div id='whole'>")
 print("<img src='samurai.gif'>")
 print("<h1>検索結果一覧</h1>\n")
 if place == "" and keyword == "%%"
@@ -76,18 +78,31 @@ print("<h1>----------------------",country,"----------------------------<br></h1
      #ここまで一国分
   }
 elsif place != "" and keyword =="%%"
+    print("<table border='1'>")
+    mc=0
     eachmonth=Array.new
- db.transaction{
-    db.execute("select * from googledatas where user like ? and country =? ORDER BY country,month, kaisu DESC", name,place){|data|
-      eachmonth.push(data[2])
-     }
-  }
+tm = today.month
+maryc=1
+while maryc <= tm
+    if maryc < 10
+    str = "0".concat(maryc.to_s)
+    eachmonth.push(str)
+    else
+      eachmonth.push(maryc.to_s)
+    end
+    maryc+=1
+end
+#eachmonth=["01","02","03","04","05","06","07","08","09","10","11","12"]
   eachmonth.uniq!
   #各月についての動作
   eachmonth.each{|month|
-  print("<h1>",month,"</h1>")
+  mc+=1
+  if mc % 3==1
+     print("<tr>")
+  end
+  print("<td>")
+  print("<h1>",month.to_s[1],"月</h1>")
    wordlist = Hash.new
-   resouces = Hash.new
    db.transaction{
       db.execute("select * from googledatas where user like? and country =? and month =? ORDER BY country,month,kaisu DESC", name,place,month){|data|
          if wordlist.key?(data[3])
@@ -102,67 +117,60 @@ elsif place != "" and keyword =="%%"
       keys=""
       values=""
      i=0
-     wordlist.each{|key,value|
+    cv=0
+   wordlist= wordlist.sort_by{|key,val| -val}
+    wordlist.each{|key,value|
+       if cv==10
+        break;
+       end
        keys+=key
        values+=value.to_s
-       if i<wordlist.size-1
+       if i<wordlist.size-1 && cv!=9
           keys+="|"
           values+=","
           i+=1
        end
+       cv+=1
       # print(key,":", value)
      }
-     wordlist.each{|key,value|
-       db.execute("select * from googledatas where user like ? and month = ? and keyword  =? ORDER BY country,month, kaisu DESC", name,month,key){|data|               }
-     # print("<br>----------</br>")
-     }
+    
+  if wordlist.size>0
  print("<img src='http://chart.apis.google.com/chart?chs=300x200&chd=t:"+values+"&cht=p&chl="+keys+"'/>")
-keys=""
-values=""
-print("<br><h2>各単語アクセス元詳細</h2>")
-print("<table>")
-wordlist.each{|key,value|
-        # print(key)
-    #   print("<table>")
-      # print("")
-     #   print("<td><a href='proper.cgi?month=#{month}&name=#{name.gsub(/\%/,'')}&country=#{place}&keyword=#{key.gsub(/\%/,'')}'/>#{key}</a></td>")
-       db.transaction{
-       db.execute("select * from googledatas where user like ? and month = ? and keyword  =? ORDER BY country,month, kaisu DESC", name,month,key){|data|
-           if resouces.key?(data[5]) 
-              resouces[data[5]] +=1
-           else
-             resouces[data[5]] = 1
-           end           
-        }
-       }
-       # print("<td>"+key+"</td>")
-          i=0
-=begin
-        resouces.each{|keyr,valuer|
-         # print("<td>"+key+"</td>")
-         # print(key,":",value,"<br>")
-           keys+=keyr
-           values+=valuer.to_s
-           if i<resouces.size-1 
-              keys+="|"
-              values+=","
-           end
-        }
-=end
-      # print(keys, ":", values)
-         if key !="(not set)"
-       # print("<td><img src='http://chart.apis.google.com/chart?chs=200x100&chd=t:"+values+"&cht=p&chl="+keys+"'/></td>")
-       print("<td><a href='proper.cgi?month=#{month}&name=#{name.gsub(/\%/,'')}&country=#{place}&keyword=#{key.gsub(/\%/,'')}'/>#{key}</a></td>")
-         else
-         print("<td><h2><font color='red'>no data</font></h2></td>")
-         end
-     # print("<br>----------</br>")
-      resouces=Hash.new
+  else
+     print("<div style='width:100px;height:100px'></div><font color='red' size=15px >sorry,no&nbsp;data</font><br>
+      <font color='green' size=6px>reasons</font><br>・visitors come to your page through  <font color='red'>direct access</font> <br>・
+      visitors <font color='red'>invalidate their cookie</font><div style='width:300px;height:190px'><font color='red'>・google has stopped providing keyword</div>")
+  end
+   keys=""
+   values=""
+   if wordlist.size>0
+   print("<br><h2>アクセスキーワード一覧（クリックで詳細）</h2>")
+   print("<div id='prop'>")
+ i=0
+  cv=0
+ wordlist= wordlist.sort_by{|key,val| -val}
+   wordlist.each{|key,value|
+        if cv==9
+           break;
+        end
+           cv+=1
+          i+=1
+       if i<4
+       print("・<a style='color:#ff0000;'red href='proper.cgi?month=#{month}&name=#{name.gsub(/\%/,'')}&country=#{place}&keyword=#{key.gsub(/\%/,'')}'/>#{key}</a>")
+        else
+        print("・<a  href='proper.cgi?month=#{month}&name=#{name.gsub(/\%/,'')}&country=#{place}&keyword=#{key.gsub(/\%/,'')}'/>#{key}</a>")
+      end
      }
-    print("</table>")
+     end
+    print("</div>")
+    print("</td>")
+    if mc % 3==0
+       print("</tr>")
+    end
   }
+print("</table>")
 elsif place=="" and  keyword !="%%"
-   print("<h1>#{keyword.gsub(/\%/,'')}</h1>")
+   print("<h1><font color='red'>#{keyword.gsub(/\%/,'')}</font></h1>")
    db.transaction{
     db.execute("select * from googledatas where user like ? and keyword like ? ORDER BY country,month, kaisu DESC", name,keyword){|data|
                   countrylist.push(data[1])
@@ -196,18 +204,7 @@ eachmonth.each{|key,value|
          i+=1
       end
 }
-print(arymoji)
-=begin
-        eachmonth.each{|key,value|
-               keys+=key
-               values+=value.to_s
-              if i < eachmonth.size-1
-                   keys+="|"
-                  values += ","
-                  i+=1
-               end
-            }
-=end
+
 print(<<"HTGOs")
    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript">
@@ -221,7 +218,7 @@ print(<<"HTGOs")
 
         var options = {
           title: '#{country}',
-          hAxis: {title: 'アクセス月', minValue: 1, maxValue: 12},
+          hAxis: {title: 'アクセス月', minValue: 1, maxValue: #{today.month}},
           vAxis: {title: 'アクセス回数', minValue: 0, maxValue: 20},
         };
 
@@ -238,5 +235,6 @@ print("<div id='#{country}'></div>")
 =end  
   }
 end
+print("</div>")
 print("</body>")
 print("</html>")
