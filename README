@@ -1,0 +1,58 @@
+Google Analyticsを用いた研究者個人の
+被国際的関心度とその原因の表示システム
+
+・testg
+
+　Google Analyticsから集計したデータを入れておくデータベース。
+　研究者名(user)、ビジターの国(country)、訪問月(month)、検索キーワード(keyword)、アクセス回数(kaisu)、アクセスブラウザ(source)
+　をスキーマとしている。
+
+
+・linker.cgi
+
+　研究者の個人名をGETで受け取り、その研究者のページを表示したユーザーの国と検索　キーワード一覧を表示するcgi。
+
+・googlegraph.cgi
+
+  研究者名と、国名またはキーワードを値として受けとり、表示結果を変更する。
+　研究者名と国名が指定された場合は、月別ごとにその国へのアクセスキーワード数
+　の割合を表示する。
+　研究者名とキーワードが指定された場合は、そのキーワードの検索数を月ごとに折れ線  グラフで表示する。これを国別で表示し、検索したキーワードがどの国で伸び縮んでいる。
+
+
+・proper.cgi
+  研究者名とキーワードと国名を値として受け取り、その国でそのキーワードがどのブラウザからアクセスされたかを円グラフで表示する。
+
+
+・googledataget.rb
+
+  Google Analytics APIを用いて、SAMURAIのデータをデータベースに格納する。
+　データベースに一度格納するのは、sqliteでデータを集計、処理するため。
+
+
+
+
+・ライセンス：MIT
+
+Copyright (c) 2014 katusochan
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+・作成者：katsuochan
+  ・連絡先：asuhodayo0520@yahoo.co.jp
